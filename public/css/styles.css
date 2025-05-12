@@ -1,0 +1,10 @@
+body {
+    background-color: #1a0000;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .slider img {
+    max-height: 100vh;
+    object-fit: cover;
+  }
+  
