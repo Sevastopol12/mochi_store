@@ -27,6 +27,11 @@ app.route('/product')
   res.render('product', {title: 'Home page'})
 })
 
+app.get('/api/products', async (req, res) => {
+  const products = await pm.listAll();
+  res.json(products);
+})
+
 // Start server
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');
