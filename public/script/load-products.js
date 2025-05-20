@@ -1,22 +1,18 @@
-import ProductManager from '../models/Manager/product_manager.js';  
-
 /**
  * Built on AJAX/webservice's convention. Loads the product-list element internally.
 */
 
 // Built-in shopping cart
 const cart = {};  
-let bsCartOffcanvas;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const container = document.getElementById('product-list');
-  const model = new ProductManager();
   // Cart items
   const commitBtn  = document.getElementById('commit-btn');
 
   // Fetch products
   try {
-    const products = await model.listAll();
+    const products = await (await fetch('/api/products')).json()
 
     // No products
     if (!products || products.length < 1) {
@@ -24,10 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     container.innerHTML = '';
-    products.forEach(product => {
-      const product_element = renderCard(product);
-      container.appendChild(product_element);
-    })
+    Object.values(products).forEach(product => { container.appendChild(renderCard(product)); })
   }
 
   catch(err) {
@@ -48,8 +41,7 @@ function renderCard(product) {
   card.id = `product-${product.id}`;
   card.dataset.id = product.id;
 
-  clone.querySelector('.product-image')
-      .src = product.imageUrl || '/img/mochi.jpeg';
+  clone.querySelector('.product-image').src = '/img/mochi.jpeg';
   clone.querySelector('.product-name').textContent = product.name;
   clone.querySelector('.product-price').textContent = `$ ${product.price.toFixed(2)}`;
   clone.querySelector('.qty-value').textContent = 0;
