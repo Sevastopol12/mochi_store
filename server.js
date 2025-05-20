@@ -1,9 +1,4 @@
-import AccountManager from './app/Manager/account_manager.js';
-import ProductManager from './app/Manager/product_manager.js';
-import Product from './app/Product/product.js';
-import User from './app/Account/user.js';
-import Admin from './app/Account/admin.js';
-import AppConfig from './app/Config.js';
+import ProductManager from './models/Manager/product_manager.js';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -24,11 +19,13 @@ app.set('views', path.join(__dirname, 'views'));
 // Homepage
 app.route('/')
 .get(async (req, res) => {
-  console.log(await pm.listAll())
   res.render('homepage', {title: 'Home page'})
 })
 
-
+app.route('/product')
+.get(async (req, res) => {
+  res.render('product', {title: 'Home page'})
+})
 
 // Start server
 app.listen(3000, () => {
