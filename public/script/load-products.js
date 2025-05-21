@@ -181,6 +181,8 @@ async function commitOrder() {
     return data;
   })
   .then(({ }) => {
+    showOrderModal();
+
     Object.keys(cart).forEach(k => delete cart[k]);
     renderCart();
     document.querySelectorAll('.qty-value').forEach(s => (s.textContent = '0'));
@@ -190,3 +192,24 @@ async function commitOrder() {
     alert(err.message);
   });
 }
+
+// Commit alert
+const modal       = document.getElementById('orderModal');
+const closeIcon   = document.getElementById('orderModalClose');
+const okButton    = document.getElementById('orderModalOk');
+
+function showOrderModal() {
+  modal.style.display = 'flex';
+}
+function hideOrderModal() {
+  modal.style.display = 'none';
+}
+
+// close on “×” or “OK”
+closeIcon.addEventListener('click', hideOrderModal);
+okButton.addEventListener('click', hideOrderModal);
+
+// also close if user clicks outside the content
+modal.addEventListener('click', e => {
+  if (e.target === modal) hideOrderModal();
+});
