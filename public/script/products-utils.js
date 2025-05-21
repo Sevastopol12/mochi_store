@@ -172,7 +172,7 @@ async function commitOrder() {
 
   fetch('/api/order', {
   method: 'POST',
-  headers: { 'Content-type': 'application/json' },
+  headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ orderMeta })
   })
   .then(async res => {
