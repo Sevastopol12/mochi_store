@@ -172,7 +172,7 @@ async function commitOrder() {
 
   fetch('/api/order', {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+  headers: { 'Content-type': 'application/json' },
   body: JSON.stringify({ orderMeta })
   })
   .then(async res => {
@@ -181,8 +181,6 @@ async function commitOrder() {
     return data;
   })
   .then(({ }) => {
-    showOrderModal();
-
     Object.keys(cart).forEach(k => delete cart[k]);
     renderCart();
     document.querySelectorAll('.qty-value').forEach(s => (s.textContent = '0'));
