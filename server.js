@@ -2,6 +2,8 @@ import ProductManager from './models/Manager/product_manager.js';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { handleCommitOrder } from './controllers/OrderController.js';
+
 
 const app = express();
 const pm = new ProductManager();
@@ -31,6 +33,10 @@ app.get('/api/products', async (req, res) => {
   const products = await pm.listAll();
   res.json(products);
 })
+
+// POST: order
+app.post('/api/order', handleCommitOrder);
+
 
 // Start server
 app.listen(3000, () => {
