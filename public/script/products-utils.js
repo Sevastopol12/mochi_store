@@ -1,54 +1,23 @@
-/**
- * Built on AJAX/webservice's convention. Loads the product-list element internally.
-*/
+const container = document.getElementById('product-list');
+const messageEl = document.getElementById('message');
 
-// Built-in shopping cart
-let cart = {};  
-// Payment method defaults to cash
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // Target product-list section
-  const container = document.getElementById('product-list');
-  // Fetch products
+/* ===========================
+   Products
+   =========================== */
+
+// Load products
+async function loadProducts() {
   try {
     const products = await (await fetch('/api/products')).json();
 
     // No products
-    if (!products || products.length < 1) {
-      container.innerHTML = "<p> No product to display. </p>";
-    }
-
+    if (!products || products.length < 1) { container.innerHTML = "<p> No product to display. </p>"; }
     container.innerHTML = '';
-    products.forEach(product => {
-      const product_element = renderCard(product);
-      container.appendChild(product_element);
-    })
+    Object.values(products).forEach(product => {container.appendChild(renderCard(product));})
   }
-
-  catch(err) {
-    console.error('Error loading products or template:', err);
-    container.innerHTML = "<p>Error loading products.</p>";
-  }
-
-  // Payment
-  const cashBtn = document.getElementById('pay-cash-btn');
-  const cardBtn = document.getElementById('pay-card-btn');
-
-  [cashBtn, cardBtn].forEach(btn => {
-    btn.addEventListener('click', () => {
-      cashBtn.classList.remove('active');
-      cardBtn.classList.remove('active');
-      btn.classList.add('active');
-    });
-  });
-
-  // Commit button
-  const commitBtn  = document.getElementById('commit-btn');
-  commitBtn.addEventListener('click', async () => {
-    commitOrder();
-  });
-
-})
+  catch(err) { console.error('Error loading products or template:', err); container.innerHTML = err;}
+}
 
 // Render item's html content
 function renderCard(product) {
@@ -78,9 +47,29 @@ function renderCard(product) {
 }
 
 
-// Shopping cart 
-function updateCart(product, delta) {
+/* ===========================
+   Shopping Cart
+   =========================== */
 
+let cart = {}; 
+
+// Payment method
+const payment = document.querySelector('.btn-group .btn.active');
+const cashBtn = document.getElementById('pay-cash-btn');
+const cardBtn = document.getElementById('pay-card-btn');
+[cashBtn, cardBtn].forEach(btn => {
+  btn.addEventListener('click', () => {
+    cashBtn.classList.remove('active');
+    cardBtn.classList.remove('active');
+    btn.classList.add('active');
+  });
+});
+
+// Address
+const address = document.getElementById('shipping-address')
+
+// Update cart
+function updateCart(product, delta) {
   // Update state
   const entry = cart[product.id] || { product, qty: 0 };
   entry.qty = Math.max(0, entry.qty + delta);
@@ -106,11 +95,7 @@ function renderCart() {
   const total = document.getElementById('cart-total');
   ul.innerHTML = '';
   let sum = 0;
-
-
-  if (Object.keys(cart).length > 0) {
-      cartEmptyParagraph.setAttribute('hidden', 'true');
-  }
+  if (Object.keys(cart).length >= 0) { cartEmptyParagraph.setAttribute('hidden', 'true'); }
 
   else {
       ul.innerHTML = '';
@@ -138,66 +123,70 @@ function renderCart() {
     sum += product.price * qty;
   });
 
-  total.textContent = `$${sum.toFixed(2)}`;
+  total.textContent = `${sum.toFixed(2)} VND`;
 }
+
+// Load cart
+function refreshCart() {
+  address.value = payment.value = '';
+  Object.keys(cart).forEach(k => delete cart[k]);
+  renderCart();
+}
+
+
+/* ===========================
+   Commit order
+   =========================== */
+
+// Commit button
+const commitBtn  = document.getElementById('commit-btn');
+commitBtn.addEventListener('click', commitOrder)
 
 // POST 'api/order/': Commit order
 async function commitOrder() {
-  // Validate address
-  let address = document.getElementById('shipping-address').value.trim();
-  if (!address || address.length < 1) {
-    document.getElementById('message').textContent = 'Please enter an address.';
-    return;
-  }
-
-  // Validate payment method
-  let payment = document.querySelector('.btn-group .btn.active').dataset.value.trim();
-  if (!payment || payment.trim().length < 1) {
-    document.getElementById('message').textContent = 'Please select a payment method.';
-    return;
-  }
-
-  // Validate product
-  if (Object.keys(cart).length < 1) {
-    document.getElementById('message').textContent = 'Please select an item.';
-    return;
-  }
-
+  let my_address = address.value.trim() || null;
+  let my_payment = payment.dataset.value.trim() || null;
   let products = Object.values(cart).map(e => ({
     product: e.product,
     quantity:  e.qty
   }));
 
-  let orderMeta = {products, address, payment};
+  products = products.length > 0? products : null;
 
-  fetch('/api/order', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ orderMeta })
-  })
-  .then(async res => {
+  let orderMeta = {products, address: my_address, payment: my_payment};
+
+  try {
+    const res = await fetch('/api/order', {
+      method: 'POST',
+      headers: {'Content-type': 'application/json'},
+      body: JSON.stringify({ orderMeta })
+    })
     const data = await res.json();
-    if (!res.ok) throw new Error(data['message']);
-    return data;
-  })
-  .then(({ }) => {
-    showOrderModal();
 
-    Object.keys(cart).forEach(k => delete cart[k]);
-    renderCart();
-    document.querySelectorAll('.qty-value').forEach(s => (s.textContent = '0'));
-  })
-  .catch(err => {
-    console.error('Order failed:', err);
-    alert(err.message);
-  });
+    // Authorization
+    if (res.status === 401) {
+      document.getElementById('openAuth').click();
+      return;
+    } 
+
+    if (!res.ok) throw new Error(data.message || 'Add failed');
+    else {
+      showOrderModal();
+      await refreshAll();
+    }
+  }
+
+  catch (err) {
+    showMessage(err.message);
+  }
 }
 
 // Commit alert
-const modal       = document.getElementById('orderModal');
-const closeIcon   = document.getElementById('orderModalClose');
-const okButton    = document.getElementById('orderModalOk');
+const modal = document.getElementById('orderModal');
+const closeIcon = document.getElementById('orderModalClose');
+const okButton = document.getElementById('orderModalOk');
 
+// Commit modal
 function showOrderModal() {
   modal.style.display = 'flex';
 }
@@ -205,11 +194,32 @@ function hideOrderModal() {
   modal.style.display = 'none';
 }
 
-// close on “×” or “OK”
+// Close on “×” or “OK”
 closeIcon.addEventListener('click', hideOrderModal);
 okButton.addEventListener('click', hideOrderModal);
 
-// also close if user clicks outside the content
-modal.addEventListener('click', e => {
-  if (e.target === modal) hideOrderModal();
-});
+// Close if user clicks outside the content
+modal.addEventListener('click', e => { if (e.target === modal) hideOrderModal(); });
+
+
+/* ===========================
+   Helpers
+   =========================== */
+
+// Refresh page 
+async function refreshAll() {
+    await Promise.all([refreshCart()], [loadProducts()]);
+}
+
+// Helper to display messages
+function showMessage(msg, type = 'danger') {
+  messageEl.textContent = msg;
+  messageEl.className = `alert alert-${type} mt-2`;
+  setTimeout(() => {
+    messageEl.textContent = '';
+    messageEl.className = '';
+  }, 5000);
+}
+
+// DOM response
+document.addEventListener('DOMContentLoaded', refreshAll)
