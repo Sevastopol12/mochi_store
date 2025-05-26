@@ -190,6 +190,254 @@ body {
 }
 
 /* ==========================
+  Product info
+  ========================== */
+
+.mochi-modal .modal-dialog {
+  /* max-width: 100 !important; */
+  width: 80vw;
+  margin: 3rem auto;
+  height: auto;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;          
+}
+
+.mochi-modal .modal-content {
+  background: #fff6fb;
+  border-radius: 4rem;
+  overflow: hidden;
+  padding: 0;
+  border: 4px solid #ffd6e7;
+  box-shadow: 0 20px 40px rgba(232, 67, 147, 0.15);
+  transition: all 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.mochi-sprinkles {
+  height: 36px;
+  background: repeating-linear-gradient(
+    45deg,
+    #ffc3a0 0 10px,
+    #ffafbd 10px 20px,
+    #ffe3e3 20px 30px,
+    #ffd6e7 30px 40px
+  );
+}
+
+.modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  z-index: 20;
+}
+.mochi-close-icon {
+  width: 42px;
+  height: 42px;
+  transition: transform 0.2s ease;
+}
+.modal-close:hover .mochi-close-icon {
+  transform: rotate(15deg) scale(1.1);
+}
+
+.mochi-modal .modal-body {
+  padding: 3.5rem 2.5rem 3rem;
+  border: 6px dashed #ffa8c3;
+  border-top: none;
+}
+
+.modal-img {
+  max-height: 80vh;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 2rem;
+  border-radius: 2rem;
+  animation: floatMochi 3s ease-in-out infinite;
+  box-shadow: 0 12px 30px rgba(255, 132, 180, 0.25);
+  object-fit: contain;
+}
+
+.modal-title {
+  font-size: 3.5rem !important;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #ff6f91;
+  font-family: 'Comic Neue', 'Fredoka', cursive, sans-serif;
+  text-align: center;
+  word-break: break-word;
+}
+
+.mochi-title-bubble {
+  display: inline-block;
+  background: #ffeef5; /* soft pastel pink */
+  padding: 1rem 2rem;
+  border-radius: 3rem;
+  box-shadow: 0 6px 18px rgba(255, 174, 201, 0.25);
+  border: 2px dashed #ffb6c1;
+  font-size: 3rem;
+  font-family: 'Comic Neue', 'Fredoka', cursive, sans-serif;
+  color: #ff6f91;
+  text-align: center;
+}
+
+.modal-text {
+  background: #fff0f8;
+  border: 4px dashed #ff85c0;
+  border-radius: 2rem;
+  padding: 1.75rem;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  font-family: 'Fredoka', sans-serif;
+  max-height: 35vh;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+}
+
+.modal-price {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #e84393;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.add-cart-btn {
+  background-color: #ff85c0;
+  color: white;
+  padding: 1.2rem 2.4rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(232, 67, 147, 0.3);
+  transition: all 0.25s ease;
+}
+.add-cart-btn:hover {
+  transform: scale(1.08) translateY(-4px);
+  background-color: #ff6f91;
+  box-shadow: 0 12px 34px rgba(232, 67, 147, 0.4);
+}
+
+.modal[style*="display: none"] {
+  pointer-events: none !important;
+}
+
+@keyframes floatMochi {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Center modal vertically if tall enough */
+@media (min-height: 600px) {
+  .mochi-modal .modal-dialog {
+    display: table;
+    height: 100%;
+  }
+  .mochi-modal .modal-content {
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
+/* Horizontal scroller becomes vertical list on <768px */
+@media (max-width: 767px) {
+  .horizontal-scroll-wrapper {
+    display: block !important;
+    overflow-x: visible !important;
+    border: none;               /* drop decorative border if desired */
+    padding-bottom: 0;
+  }
+  .horizontal-scroll-wrapper .col-sm-6 {
+    width: 100% !important;     /* full-width cards */
+    margin-bottom: 1rem;
+  }
+}
+
+
+/* =====================
+   Mobile Responsive 
+   ===================== */
+
+/* Hero slider: cap its height & scaling */
+@media (max-width: 992px) {
+  .slider,
+  .mochi-slider {
+    min-height: 50vh;    /* shorter on tablets */
+  }
+  .mochi-intro-overlay {
+    padding: 1.5rem !important;
+  }
+  .mochi-intro-overlay h2 {
+    font-size: 1.6rem;
+  }
+  .mochi-intro-overlay p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Make your horizontal scroller stack as cards */
+@media (max-width: 767px) {
+  .horizontal-scroll-wrapper {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr; /* two across on small phones */
+    gap: 1rem;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+  }
+  .horizontal-scroll-wrapper .product-card {
+    width: 100% !important;
+  }
+}
+
+/* Hero text slide-ins: wrap softly */
+@media (max-width: 576px) {
+  .mochi-slide-in {
+    display: block;   /* each word on its own line */
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    animation: none !important;
+    text-align: center;
+  }
+}
+
+/* Admin & Product grids: stack under 768px */
+@media (max-width: 767px) {
+  .row.g-4 > .col-lg-8,
+  .row.g-4 > .col-lg-4 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Footer always sticks to bottom on short pages */
+body.d-flex.flex-column.min-vh-100 main.flex-grow-1 {
+  margin-bottom: 2rem;
+}
+
+/* Site-bg overlay: switch off on mobile for clarity */
+@media (max-width: 576px) {
+  .site-bg {
+    display: none;
+  }
+}
+
+/* Adjust font sizes globally */
+@media (max-width: 768px) {
+  .section-title { font-size: 1.6rem; }
+}
+@media (max-width: 576px) {
+  .section-title { font-size: 1.3rem; }
+}
+
+
+/* ==========================
    Form Inputs 
    ========================== */
 .cute-input {
@@ -207,8 +455,8 @@ body {
 /* ==========================
    Cart 
    ========================== */
-   
-/* Floating cart button (bottom-left circle) */
+
+/* Floating cart button */
 .cart-float-btn {
   position: fixed;
   bottom: 2rem; 
@@ -380,9 +628,8 @@ button.add-cart-btn.btn-pink {
   left: 0; top: 0;
   width: 100%; height: 100%;
   background-color: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
   font-family: 'Fredoka', sans-serif;
 }
 
@@ -441,6 +688,12 @@ button.add-cart-btn.btn-pink {
   margin: 0 auto 15px auto;
   width: 100px;
   height: 100px;
+}
+
+#orderModal.modal.show {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 /* ==========================
@@ -504,6 +757,7 @@ button.add-cart-btn.btn-pink {
   display: block; margin: 0 auto 16px;
   width: 64px; height: 64px;
 }
+
 
 /* ===========================
    Access Denied
@@ -617,162 +871,5 @@ button.add-cart-btn.btn-pink {
 @media (max-width: 576px) {
   #search-suggestions {
     font-size: 0.9rem;
-  }
-}
-
-
-/* ==========================
-  Product info
-  ========================== */
-
-.mochi-modal .modal-dialog {
-  /* max-width: 1000 !important;   */
-  width: 80vw;
-  margin: 3rem auto;
-  height: auto;
-  max-height: 90vh;
-  display: flex;
-  align-items: center;          
-}
-
-.mochi-modal .modal-content {
-  background: #fff6fb;
-  border-radius: 4rem;
-  overflow: hidden;
-  padding: 0;
-  border: 4px solid #ffd6e7;
-  box-shadow: 0 20px 40px rgba(232, 67, 147, 0.15);
-  transition: all 0.3s ease;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.mochi-sprinkles {
-  height: 36px;
-  background: repeating-linear-gradient(
-    45deg,
-    #ffc3a0 0 10px,
-    #ffafbd 10px 20px,
-    #ffe3e3 20px 30px,
-    #ffd6e7 30px 40px
-  );
-}
-
-.modal-close {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  background: none;
-  border: none;
-  z-index: 20;
-}
-.mochi-close-icon {
-  width: 42px;
-  height: 42px;
-  transition: transform 0.2s ease;
-}
-.modal-close:hover .mochi-close-icon {
-  transform: rotate(15deg) scale(1.1);
-}
-
-.mochi-modal .modal-body {
-  padding: 3.5rem 2.5rem 3rem;
-  border: 6px dashed #ffa8c3;
-  border-top: none;
-}
-
-.modal-img {
-  max-height: 80vh;
-  max-width: 100%;
-  width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto 2rem;
-  border-radius: 2rem;
-  animation: floatMochi 3s ease-in-out infinite;
-  box-shadow: 0 12px 30px rgba(255, 132, 180, 0.25);
-  object-fit: contain;
-}
-
-.modal-title {
-  font-size: 3.5rem !important;
-  font-weight: 700;
-  line-height: 1.2;
-  color: #ff6f91;
-  font-family: 'Comic Neue', 'Fredoka', cursive, sans-serif;
-  text-align: center;
-  word-break: break-word;
-}
-
-.mochi-title-bubble {
-  display: inline-block;
-  background: #ffeef5; /* soft pastel pink */
-  padding: 1rem 2rem;
-  border-radius: 3rem;
-  box-shadow: 0 6px 18px rgba(255, 174, 201, 0.25);
-  border: 2px dashed #ffb6c1;
-  font-size: 3rem;
-  font-family: 'Comic Neue', 'Fredoka', cursive, sans-serif;
-  color: #ff6f91;
-  text-align: center;
-}
-
-.modal-text {
-  background: #fff0f8;
-  border: 4px dashed #ff85c0;
-  border-radius: 2rem;
-  padding: 1.75rem;
-  font-size: 1.2rem;
-  line-height: 1.6;
-  font-family: 'Fredoka', sans-serif;
-  max-height: 35vh;
-  overflow-y: auto;
-  margin-bottom: 1.5rem;
-}
-
-.modal-price {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #e84393;
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.add-cart-btn {
-  background-color: #ff85c0;
-  color: white;
-  padding: 1.2rem 2.4rem;
-  font-size: 1.35rem;
-  font-weight: 600;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 10px 30px rgba(232, 67, 147, 0.3);
-  transition: all 0.25s ease;
-}
-.add-cart-btn:hover {
-  transform: scale(1.08) translateY(-4px);
-  background-color: #ff6f91;
-  box-shadow: 0 12px 34px rgba(232, 67, 147, 0.4);
-}
-
-.modal[style*="display: none"] {
-  pointer-events: none !important;
-}
-
-@keyframes floatMochi {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-
-/* Center modal vertically if tall enough */
-@media (min-height: 600px) {
-  .mochi-modal .modal-dialog {
-    display: table;
-    height: 100%;
-  }
-  .mochi-modal .modal-content {
-    display: table-cell;
-    vertical-align: middle;
   }
 }
