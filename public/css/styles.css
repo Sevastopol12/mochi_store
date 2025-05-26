@@ -149,7 +149,6 @@ body {
 /* ==========================
    Product 
    ========================== */
-   
 
 .product-card {
   border-radius: 16px;
@@ -208,130 +207,166 @@ body {
 /* ==========================
    Cart 
    ========================== */
-.cart-sidebar {
-  position: relative;
-  background: #fff5f8;                      /* very light pink */
-  border: 4px dashed #ffb3c1;               /* pastel pink dashed border */
-  border-radius: 24px;                      /* extra round corners */
+   
+/* Floating cart button (bottom-left circle) */
+.cart-float-btn {
+  position: fixed;
+  bottom: 2rem; 
+  right: 2rem; 
+  left: auto; 
+  width: 72px; 
+  height: 72px; 
+  font-size: 2rem; 
+  background: #fff5f8; 
+  color: #e84393;
+  border: 4px dashed #ffb3c1; 
+  border-radius: 50%; 
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-  padding: 1.5rem;
-  overflow: hidden;
-  max-width: 500px;    
-  width: 100%;         
-  margin: 0 auto;
+  z-index: 1050;
+  transition: background 0.2s, transform 0.1s;
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
 }
 
-/* Add a subtle “sprinkles” pattern behind */
-.cart-sidebar::before {
+.cart-float-btn:hover {
+  background: #ffe6ee; 
+  transform: scale(1.05); 
+}
+/* Modal content bubble */
+#cartModal .modal-dialog {
+  display: flex; /* Enable flexbox for alignment */
+  align-items: center; /* Vertically center the modal */
+  justify-content: center; /* Horizontally center the modal */
+  min-height: calc(100% - 2rem); /* Ensure it takes up most of the viewport */
+  margin: 1rem auto; /* Adjust margins for spacing */
+}
+
+#cartModal .modal-content {
+  border-radius: 24px;
+  overflow: hidden;
+  background: #fff5f8;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  width: 90%; /* Adjust width as needed */
+  max-width: 600px; /* Set a maximum width if desired */
+  /* Increase height if needed, but consider content responsiveness */
+  /* max-height: 80vh;
+  overflow-y: auto; */
+}
+
+/* Sprinkles pattern (optional) */
+#cartModal .modal-content::before {
   content: "";
   position: absolute;
   top: -10%;
   left: -10%;
   width: 120%;
   height: 120%;
-  opacity: 0.1;
+  opacity: 0.05;
   pointer-events: none;
-  overflow: visible;
 }
 
-/* Heading bubble */
-.cart-heading {
-  position: relative;
-  top: -0.5rem;       
-  z-index: 1;         
-  margin-bottom: 1rem; 
-}
-
-.cart-heading h4 {
-  margin: 0;
-  font-family: 'Fredoka', sans-serif;
+/* Header bubble */
+#cartModal .modal-header {
+  background: #ffc3a0;
   color: #e84393;
+  font-family: 'Fredoka', sans-serif;
   font-weight: 700;
+  padding: 1.5rem; /* Increase padding for a bigger header */
 }
 
-/* Empty text gets a cuter font & color */
-.cart-sidebar .empty-text {
+/* Empty text */
+#cartModal .empty-text {
   font-family: 'Fredoka', sans-serif;
-  font-style: normal;
   color: #ff85c0;
-  font-size: 0.95rem;
+  text-align: center;
+  margin-bottom: 1.5rem; /* Increase margin */
+  font-size: 1.1rem; /* Slightly bigger text */
 }
 
 /* Cart items */
-.cart-sidebar .cart-items li {
-  padding: 0.75rem 0;
+#cartModal .list-group-item {
+  border: none;
   border-bottom: 1px dashed #ffb3c1;
+  background: transparent;
+  font-family: 'Fredoka', sans-serif;
+  padding: 1rem 1.5rem; /* Increase padding for more space */
+  font-size: 1rem; /* Slightly bigger text */
 }
-.cart-sidebar .cart-items li:last-child {
+#cartModal .list-group-item:last-child {
   border-bottom: none;
 }
 
 /* Shipping input bubble */
-.cart-sidebar .form-floating .form-control {
+#cartModal .form-control.cute-input {
   border-radius: 12px;
   border: 2px solid #ffb3c1;
   background: #fff0f4;
+  padding: 0.75rem; /* Increase padding */
+  font-size: 1rem; /* Slightly bigger text */
 }
-.cart-sidebar .form-floating label {
+#cartModal .form-label {
   font-family: 'Fredoka', sans-serif;
+  font-size: 1rem; /* Slightly bigger text */
+  margin-bottom: 0.5rem; /* Add some spacing */
 }
 
-/* Payment toggle buttons */
-.cart-sidebar .payment-toggle .pay-btn {
+/* Payment toggle */
+#cartModal .btn-group .btn {
   font-family: 'Fredoka', sans-serif;
   border: 2px solid #ffb3c1;
   background: #fff0f4;
   border-radius: 8px !important;
+  padding: 0.75rem 1rem; /* Increase padding */
+  font-size: 1rem; /* Slightly bigger text */
 }
-.cart-sidebar .payment-toggle .pay-btn.active {
+#cartModal .btn-group .btn.active {
   background-color: #ff6b81;
   color: #fff;
 }
 
 /* Total row */
-.cart-sidebar .total-row .total-label {
+#cartModal .total-label {
   font-family: 'Fredoka', sans-serif;
   color: #6c5ce7;
-
+  font-size: 1.1rem; /* Slightly bigger text */
 }
-.cart-sidebar .total-row .total-value {
+#cartModal .total-value {
   font-family: 'Fredoka', sans-serif;
   color: #d63031;
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.3rem;
+  font-size: 1.5rem; /* Bigger total value */
 }
 
 /* Place order button: mochi-pink pill */
-.cart-sidebar .place-order {
+#cartModal .place-order {
   background-color: #ff8fab;
   border-radius: 50px;
-  padding: 0.75rem 1rem;
+  padding: 1rem 3rem; /* Increase padding */
   font-family: 'Fredoka', sans-serif;
-  font-size: 1rem;
+  font-size: 1.1rem; /* Slightly bigger text */
+  color: #fff;
+  width: 100%;
+  border: none;
   transition: background-color 0.2s, transform 0.1s;
 }
-.cart-sidebar .place-order:not(:disabled):hover {
+#cartModal .place-order:hover {
   background-color: #e84393;
   transform: translateY(-2px);
 }
 
-/* Optional: add little mochi icons next to list items */
-.cart-sidebar .cart-items li {
-  position: relative;
-  padding-left: 2rem;
+/* Modal footer overrides */
+#cartModal .modal-footer {
+  border-top: none;
+  padding: 1.5rem; /* Increase padding */
+  background: transparent;
+  display: flex; /* Ensure content aligns properly */
+  justify-content: flex-end; /* Push buttons to the right if any */
 }
-.cart-sidebar .cart-items li::before {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-@media (min-width: 768px) {
-  aside.col-md-3 {
-    flex: 0 0 auto;
-    width: auto;          
-  }
+
+button.add-cart-btn.btn-pink {
+  font-size: 1.2rem;
+  padding: 0.25rem 0.5rem;
+  line-height: 2;
 }
 
 
