@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mochi Store</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <!-- background layer -->
+  <div class="site-bg" style="background-image: url('/img/background.jpg');"></div>
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light py-3">
+      <div class="container-fluid">
+        <img src="/img/logo.png" alt="Logo" height="40" class="d-inline-block align-text-top">
+        <a class="navbar-brand" href="/">Mochi Shop</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navMenu"
+          aria-controls="navMenu"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Your cute nav snippet -->
+        <div class="collapse navbar-collapse" id="navMenu">
+          <ul class="navbar-nav ms-auto align-items-center cute-nav">
+            <li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/product">Sản phẩm</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="bi bi-cart-fill me-1"></i>Cục mochi dễ hưn >.<</a>
+            </li>
+            <li class="nav-item"><button class="btn cute-btn me-2">🎁 Khuyến mãi</button></li>
+            <li class="nav-item"><button id="yt" class="btn cute-btn danger me-2">▶ YouTube</button></li>
+            <li class="nav-item"><button class="btn cute-btn">🛒 Giỏ hàng</button></li>
+
+            <% if (session && session.user) { %>
+              <li class="nav-item user-welcome">
+                <span>Hi, <%= session.user.name %>! 😊</span>
+                <button onclick="location.href='/api/logout'" class="btn cute-btn logout ms-2">🚪 Logout</button>
+              </li>
+            <% } else { %>
+              <li class="nav-item">
+                <button id="openAuth" class="btn cute-btn ms-2">🔒 Đăng Nhập</button>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container py-5 flex-grow-1">
+    <div class="row gx-4">
+      <!-- Products Column -->
+      <div class="col-md-8">
+        <h1 class="section-title">Mochi Truyền Thống</h1>
+          <!-- Search Bar -->
+          <div class="mb-4 position-relative">
+            <input
+              type="text"
+              id="product-search"
+              class="form-control"
+              placeholder="Search for a mochi…"
+              autocomplete="off"
+            />
+            <ul
+              id="search-suggestions"
+              class="list-group position-absolute w-100"
+              style="z-index: 1000; display: none;"
+            ></ul>
+          </div>
+          <!-- Product list -->
+          <div id="product-list" class="row g-4"></div>
+        </div>
+
+      <!-- Shopping Cart -->
+      <aside class="col-md-4">
+        <div class="cart-sidebar p-4 bg-light">
+          <div class="cart-heading text-center mb-3">
+            <i class="bi bi-cart-fill fs-2"></i>
+            <h4>Your Mochi Cart 🛒</h4>
+          </div>
+
+          <p id="cart-empty" class="empty-text text-center">Nothing here yet! 🥺</p>
+          <ul id="cart-items" class="cart-items list-unstyled mb-3"></ul>
+
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control cute-input"
+              id="shipping-address"
+              placeholder="123 Cute St"
+            />
+            <label for="shipping-address">💌 Shipping Address</label>
+          </div>
+
+          <!-- Payment Toggle -->
+          <div class="mb-3">
+            <div class="btn-group payment-toggle w-100" role="group">
+              <button type="button" class="btn pay-btn active" id="pay-cash-btn" data-value="cash">
+                🪙 Cash
+              </button>
+              <button type="button" class="btn pay-btn" id="pay-card-btn" data-value="card">
+                💳 Card
+              </button>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center total-row mb-4">
+            <span class="total-label">Total:</span>
+            <span id="cart-total" class="total-value">0.00 VND</span>
+          </div>
+
+          <button id="commit-btn" class="btn place-order w-100">
+            Place Order! ❤️
+          </button>
+
+          <!-- Message -->
+          <div id="message" class="text-center text-danger mt-2" role="alert"></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Product Templates -->
+  <template id="product-template">
+    <div class="col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 shadow-sm product-card" data-id="">
+        <img src="" class="card-img-top product-image" alt="Product image">
+        <div class="card-body d-flex flex-column">
+          <h5 class="product-name card-title text-truncate"></h5>
+          <p class="product-price mt-1 mb-3 text-primary fw-bold"></p>
+          <div class="mt-auto d-flex justify-content-between align-items-center">
+            <button class="qty-btn btn btn-outline-secondary btn-sm" data-id="" data-delta="-1">–</button>
+            <span class="qty-value px-2">0</span>
+            <button class="qty-btn btn btn-outline-secondary btn-sm" data-id="" data-delta="+1">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Product Info Modal -->
+  <div
+    class="modal fade mochi-modal"
+    id="productModal"
+    tabindex="-1"
+    aria-labelledby="productModalLabel"
+    style="display:none;"
+  >
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content position-relative">
+        <!-- Sprinkles stripe -->
+        <div class="mochi-sprinkles"></div>
+        <!-- Mochi-close button -->
+        <button type="button" class="modal-close" data-bs-dismiss="modal">
+          <img src="/img/close.png" alt="Close" class="mochi-close-icon">
+        </button>
+
+        <div class="modal-body">
+          <div class="row g-4">
+            <!-- Image -->
+            <div class="col-12 col-md-5 text-center">
+              <img
+                id="modalProductImage"
+                src=""
+                alt="Product"
+                class="img-fluid rounded-4 modal-img"
+              >
+            </div>
+            <!-- Details -->
+            <div class="col-12 col-md-7 d-flex flex-column justify-content-center">
+             <h2 id="productModalLabel" class="modal-title mb-3 text-pink">
+                <span class="mochi-title-bubble">Product Name</span>
+              </h2>
+              <div id="modalProductDesc" class="modal-text mb-4 flex-grow-1 overflow-auto">
+                Product description goes here. It will scroll if too long.
+              </div>
+              <div class="d-flex align-items-center mb-4">
+                <span class="fs-3 text-deep-pink me-3">Price:</span>
+                <span id="modalProductPrice" class="fs-2 fw-bold text-deep-pink">$0.00</span>
+              </div>
+              <button
+                id="add-cart"
+                class="btn cute-btn btn-lg mx-auto px-5 add-cart-btn"
+                data-bs-dismiss="modal"
+              >
+                🛒 Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Commit alert form -->
+  <div id="orderModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span id="orderModalClose" class="modal-close" data-bs-dismiss="modal">&times;</span>
+      <img src="/img/danke.png" alt="Cute mochi" class="modal-img">
+      <h2>🎉 Thank you!</h2>
+      <p>Your order has been placed succesfully 💖</p>
+      <button id="orderModalOk" data-bs-dismiss="modal">OK</button>
+    </div>
+  </div>
+
+  <!-- Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Loads products -->
+  <script type="module" src="/script/products-utils.js"></script>
+  <!-- Authentication -->
+  <script type="module" src="/script/auth-utils.js"></script>
+
+  <script>
+    let button = document.getElementById('yt');
+    button.addEventListener('click', () => {
+    window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank'); 
+    });
+  </script>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3">
+    &copy; 2025 Mochi Shop. All rights reserved.
+  </footer>
+
+</body>
+</html>

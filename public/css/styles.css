@@ -1,10 +1,449 @@
+:root {
+  --deep-pink: #e84393;
+}
+
+/* ==========================
+   Global Reset & Typography
+   ========================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 body {
-    background-color: #1a0000;
-    font-family: 'Arial', sans-serif;
+  /* background-color: transparent !important; */
+  background: #fff0f6;
+  font-family: 'Comic Neue', cursive, sans-serif;
+  line-height: 1.5;
+}
+
+/* For background */
+.site-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;         
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6;        
+}
+
+
+/* ==========================
+   Mochi Slide-In Animation
+   ========================== */
+.mochi-slide-in {
+  opacity: 0;
+  transform: translateY(20px);
+  display: inline-block;
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.mochi-slide-in.mochi-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================
+   Slider & Intro Overlay
+   ========================== */
+.mochi-slider {
+  position: relative;
+}
+.mochi-intro-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(0,0,0,0.3);
+  z-index: 1;
+  color: #fff;
+}
+.mochi-intro-overlay h2,
+.mochi-intro-overlay p {
+  margin-bottom: 1rem;
+}
+
+/* ==========================
+   Section Titles
+   ========================== */
+.section-title {
+  font-size: 1.8rem;
+  color: #e84393; /* Use a solid deep pink */
+  font-weight: 700;
+  font-family: 'Fredoka', cursive, Arial, sans-serif;
+  text-shadow: 1px 1px 2px rgba(255, 105, 135, 0.3);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================
+   Navigation bar
+   ========================== */
+.cute-nav {
+  gap: 0.5rem;
+}
+
+.cute-nav .nav-link {
+  color: #444;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  transition: background 0.3s, color 0.3s;
+}
+.cute-nav .nav-link.active,
+.cute-nav .nav-link:hover {
+  background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.cute-btn {
+  background: #ffe3e3;
+  color: #e84393;
+  border: 2px solid #ffb3c1;
+  border-radius: 50px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+.cute-btn:hover {
+  background: #ffb3c1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(232, 67, 147, 0.2);
+}
+.cute-btn.danger {
+  background: #ffd6e0;
+  color: #d63031;
+}
+.cute-btn.danger:hover {
+  background: #ff90b3;
+}
+
+/* Welcome & Logout styling */
+.user-welcome {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #fff0f6;
+  border-radius: 50px;
+}
+.user-welcome span {
+  font-weight: 600;
+  color: #6c5ce7;
+}
+
+/* Ensure buttons inside <li> don’t break the list layout */
+.cute-nav .btn {
+  white-space: nowrap;
+}
+
+
+/* ==========================
+   Product 
+   ========================== */
+   
+
+.product-card {
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  background: #fff;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.horizontal-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  padding-bottom: 10px;
+  gap: 1rem;                     
+  border: 3px dashed #ff99cc;   
+  border-radius: 16px;           
+  box-shadow: 0 4px 10px rgba(255, 153, 204, 0.4); 
+  background: #fff0f5;       
+}
+
+.product-pages {
+  display: flex;
+  gap: 16px;
+}
+
+.product-page {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns per page */
+  grid-template-rows: repeat(2, auto);   /* 2 rows per page */
+  gap: 16px;
+  min-width: 100%; /* Makes each page the width of the container */
+  box-sizing: border-box;
+  padding-right: 10px;
+}
+
+/* ==========================
+   Form Inputs 
+   ========================== */
+.cute-input {
+  border-radius: 12px;
+  border: 2px solid #ffd6e0;
+  background-color: #fffafa;
+  padding: 0.5rem;
+}
+.cute-input:focus {
+  border-color: #ff85c0;
+  box-shadow: 0 0 0 0.2rem rgba(255,133,192,0.25);
+  outline: none;
+}
+
+/* ==========================
+   Cart 
+   ========================== */
+.cart-sidebar {
+  position: relative;
+  background: #fff5f8;                      /* very light pink */
+  border: 4px dashed #ffb3c1;               /* pastel pink dashed border */
+  border-radius: 24px;                      /* extra round corners */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  overflow: hidden;
+  max-width: 500px;    
+  width: 100%;         
+  margin: 0 auto;
+}
+
+/* Add a subtle “sprinkles” pattern behind */
+.cart-sidebar::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  opacity: 0.1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* Heading bubble */
+.cart-heading {
+  position: relative;
+  top: -0.5rem;       
+  z-index: 1;         
+  margin-bottom: 1rem; 
+}
+
+.cart-heading h4 {
+  margin: 0;
+  font-family: 'Fredoka', sans-serif;
+  color: #e84393;
+  font-weight: 700;
+}
+
+/* Empty text gets a cuter font & color */
+.cart-sidebar .empty-text {
+  font-family: 'Fredoka', sans-serif;
+  font-style: normal;
+  color: #ff85c0;
+  font-size: 0.95rem;
+}
+
+/* Cart items */
+.cart-sidebar .cart-items li {
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed #ffb3c1;
+}
+.cart-sidebar .cart-items li:last-child {
+  border-bottom: none;
+}
+
+/* Shipping input bubble */
+.cart-sidebar .form-floating .form-control {
+  border-radius: 12px;
+  border: 2px solid #ffb3c1;
+  background: #fff0f4;
+}
+.cart-sidebar .form-floating label {
+  font-family: 'Fredoka', sans-serif;
+}
+
+/* Payment toggle buttons */
+.cart-sidebar .payment-toggle .pay-btn {
+  font-family: 'Fredoka', sans-serif;
+  border: 2px solid #ffb3c1;
+  background: #fff0f4;
+  border-radius: 8px !important;
+}
+.cart-sidebar .payment-toggle .pay-btn.active {
+  background-color: #ff6b81;
+  color: #fff;
+}
+
+/* Total row */
+.cart-sidebar .total-row .total-label {
+  font-family: 'Fredoka', sans-serif;
+  color: #6c5ce7;
+
+}
+.cart-sidebar .total-row .total-value {
+  font-family: 'Fredoka', sans-serif;
+  color: #d63031;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.3rem;
+}
+
+/* Place order button: mochi-pink pill */
+.cart-sidebar .place-order {
+  background-color: #ff8fab;
+  border-radius: 50px;
+  padding: 0.75rem 1rem;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1rem;
+  transition: background-color 0.2s, transform 0.1s;
+}
+.cart-sidebar .place-order:not(:disabled):hover {
+  background-color: #e84393;
+  transform: translateY(-2px);
+}
+
+/* Optional: add little mochi icons next to list items */
+.cart-sidebar .cart-items li {
+  position: relative;
+  padding-left: 2rem;
+}
+.cart-sidebar .cart-items li::before {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+@media (min-width: 768px) {
+  aside.col-md-3 {
+    flex: 0 0 auto;
+    width: auto;          
   }
-  
-  .slider img {
-    max-height: 100vh;
-    object-fit: cover;
-  }
-  
+}
+
+
+
+
+/* ==========================
+   Authetication
+   ========================== */
+
+.auth-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+.auth-container {
+  font-family: 'Fredoka', sans-serif;
+  background: #fff5f8;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  width: 360px;
+  overflow: hidden;
+}
+.auth-tabs { display: flex; background: #ff90b3; }
+.auth-tab {
+  flex: 1; padding: 12px; text-align: center;
+  cursor: pointer; color: #fff; font-weight: 600;
+  transition: background 0.2s;
+}
+.auth-tab--active { background: #ff6a98; }
+.auth-forms { padding: 24px; background: #ffffff; }
+.auth-form { display: none; }
+.auth-form--active { display: block; }
+.auth-field { margin-bottom: 16px; }
+.auth-field label {
+  display: block; margin-bottom: 6px;
+  color: #333; font-size: 14px;
+}
+.auth-field input {
+  width: 100%; padding: 10px 12px;
+  border: 2px solid #ffd6e0; border-radius: 12px;
+  font-size: 14px; background: #fffafa;
+}
+.auth-field input:focus {
+  border-color: #ff6a98; outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(255,105,135,0.25);
+}
+.auth-btn {
+  width: 100%; padding: 12px;
+  background-color: #ff6a98; color: #fff;
+  font-size: 16px; border: none; border-radius: 24px;
+  cursor: pointer; transition: transform 0.1s ease;
+}
+.auth-btn:hover { transform: scale(1.03); background-color: #ff4d6d; }
+.auth-toggle {
+  text-align: center; margin-top: 12px;
+  font-size: 14px; color: #ff6a98;
+}
+.auth-toggle span { text-decoration: underline; cursor: pointer; }
+.auth-icon {
+  display: block; margin: 0 auto 16px;
+  width: 64px; height: 64px;
+}
+
+/* ===========================
+   Access Denied
+   =========================== */
+
+.denied-page {
+  background: linear-gradient(135deg, #ffe3e3 0%, #fff0f6 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.denied-container {
+  text-align: center;
+  padding: 2rem;
+  background: #ffffffcc;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(232, 67, 147, 0.2);
+  max-width: 360px;
+  margin: 1rem;
+}
+
+.denied-icon {
+  width: 120px;
+  margin-bottom: 1rem;
+  animation: bounce 1.2s infinite ease-in-out;
+}
+
+.denied-container h1 {
+  font-family: 'Fredoka', cursive;
+  color: #e84393;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.denied-container p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+
+
