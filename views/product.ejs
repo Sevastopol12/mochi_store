@@ -68,24 +68,9 @@
       <!-- Products Column -->
       <div class="col-12">
         <h1 class="section-title">Mochi Truyền Thống</h1>
-          <!-- Search Bar -->
-          <div class="mb-4 position-relative">
-            <input
-              type="text"
-              id="product-search"
-              class="form-control"
-              placeholder="Search for a mochi…"
-              autocomplete="off"
-            />
-            <ul
-              id="search-suggestions"
-              class="list-group position-absolute w-100"
-              style="z-index: 1000; display: none;"
-            ></ul>
-          </div>
-          <!-- Product list -->
-          <div id="product-list" class="row g-4"></div>
-        </div>
+      <!-- Product list -->
+      <div id="product-list" class="row g-4"></div>
+    </div>
 
       <!-- Floating Cart Button -->
       <button id="openCartBtn" class="btn btn-pink rounded-circle cart-float-btn">
@@ -109,6 +94,59 @@
       </div>
     </div>
   </template>
+
+  <!-- Product Info Modal -->
+  <div
+    class="modal fade mochi-modal"
+    id="productModal"
+    tabindex="-1"
+    aria-labelledby="productModalLabel"
+    style="display:none;"
+  >
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content position-relative">
+
+        <!-- Mochi-close button -->
+        <button type="button" class="modal-close" data-bs-dismiss="modal">
+          <img src="/img/close.png" alt="Close" class="mochi-close-icon">
+        </button>
+
+        <div class="modal-body">
+          <div class="row g-4">
+            <!-- Image -->
+            <div class="col-12 col-md-5 text-center">
+              <img
+                id="modalProductImage"
+                src=""
+                alt="Product"
+                class="img-fluid rounded-4 modal-img"
+              >
+            </div>
+            <!-- Details -->
+            <div class="col-12 col-md-7 d-flex flex-column justify-content-center">
+             <h2 id="productModalLabel" class="modal-title mb-3 text-pink">
+                <span class="mochi-title-bubble">Product Name</span>
+              </h2>
+              <div id="modalProductDesc" class="modal-text mb-4 flex-grow-1 overflow-auto">
+                Product description goes here. It will scroll if too long.
+              </div>
+              <div class="d-flex align-items-center mb-4">
+                <span class="fs-3 text-deep-pink me-3">Price:</span>
+                <span id="modalProductPrice" class="fs-2 fw-bold text-deep-pink">$0.00</span>
+              </div>
+              <button
+                id="add-cart"
+                class="btn cute-btn btn-lg mx-auto px-5 add-cart-btn"
+                data-bs-dismiss="modal"
+              >
+                🛒 Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Shopping Cart -->
   <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel">
@@ -143,7 +181,6 @@
       </div>
     </div>
   </div>
-</div>
 
   <!-- Commit alert form -->
   <div
