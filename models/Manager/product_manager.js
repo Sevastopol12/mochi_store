@@ -1,63 +1,77 @@
-import Product from "../Product/product.js";
-import BaseManager from "./base_manager.js";
 
-export class ProductManager extends BaseManager {
+import BaseManager from './Manager/base_manager.js';
+import Product from './Product/product.js';
+
+export default class ProductManager extends BaseManager {
   constructor() {
     super();
     this.collection = 'products';
   }
 
-  async add({ product_id, name, price, quantity }) {
-    let db = await this.dbPromise;
-    let products = db.collection(this.collection);
+  // Add a product
+  async add(product_id, name, price, quantity, description) {
+    const db = await this.dbPromise;
+    const products = db.collection(this.collection);
 
-    try {
-      let new_product = new Product({ id: product_id, name, price, quantity });
-      await products.insertOne(new_product);
-      return this;
-    } catch (error) {
-      console.error('Error adding product to database:', error);
-      throw error;
+    let newId = String(product_id).trim() || String((await this.listAll()).length +1);
+  
+    const new_product = new Product({ id: newId, name, price, quantity, description });
+    await products.insertOne(new_product);
+    return 'Successfully added.';
+  }
+
+  // Remove a product
+  async remove(product_id) {
+    const db = await this.dbPromise;
+    const products = db.collection(this.collection);
+    await products.deleteOne({ id: product_id });
+  }
+
+  // Update product
+  async updateProduct(product, add_quantity, new_price, new_description) {
+    const db = await this.dbPromise;
+    const products = db.collection(this.collection);
+    
+    //update quantity
+    const updateSet = {};
+
+    // add quantity
+    if (add_quantity !== null && !isNaN(add_quantity)) {
+      updateSet.quantity = product.quantity + add_quantity
     }
-  }
-
-  async remove({ product_id }) {
-    let db = await this.dbPromise;
-    let products = db.collection(this.collection);
-
-    let product = await products.findOne({ id: product_id });
-
-    if (product !== null) {
-      await products.deleteOne({ id: product_id });
+    // new price
+    if (new_price !== null && !isNaN(new_price)) {
+      updateSet.price = new_price;
     }
-
-    return this;
+    // new description
+    if (new_description !== null) {
+      updateSet.description = new_description;
+    }
+    
+    await products.updateOne({ id: product.id }, { $set: updateSet });
   }
 
-  async updateQuantity(product, add_quantity) {
-    let db = await this.dbPromise;
-    let products = db.collection(this.collection);
-    let new_quantity = product.quantity + add_quantity;
-
-    await products.updateOne(
-      { id: product.id },
-      { $set: { quantity: new_quantity } }
-    );
-
-    return this;
-  }
-
+  // List all existing products
   async listAll() {
-    let db = await this.dbPromise;
-    let products = db.collection(this.collection);
-    return products.find({}).toArray();
+    const db = await this.dbPromise;
+    const products = db.collection(this.collection);
+    return products.find({}).toArray() || [];
+  }
+  
+  // Find a product using its id
+  async findById(product_id) {
+    const db = await this.dbPromise;
+    return await db.collection(this.collection).findOne({ id: product_id });
   }
 
-  async findById(product_id) {
-    let db = await this.dbPromise;
-    let products = db.collection(this.collection);
-    return await products.findOne({ id: product_id }) || null;
+  // Find a product using its name
+  async findByName(product_name) {
+    const db = await this.dbPromise;
+    return await db.collection(this.collection).findOne({ name: product_name });
+  }
+
+  // Existence of a product
+  async ExistenceValidation(product_id, product_name) {
+    return (await this.findById(product_id) || await this.findByName(product_name)) ? true : false;
   }
 }
-
-export default ProductManager;
