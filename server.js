@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 
 import { renderProductPage, listAll } from './controllers/ProductController.js';
 import { handleCommitOrder } from './controllers/OrderController.js';
+import { addProduct, displayRevenue, updateProduct, removeProduct } from './controllers/AdminController.js';
 import { checkAuth, checkRole, login, register, logout } from './controllers/AuthController.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -43,8 +44,17 @@ app.post('/api/login', login);
 app.post('/api/register', register);
 app.get('/api/logout', logout);
 
+// Admin page
+app.get('/admin', checkAuth, checkRole, (req, res) => res.render('admin'));
+
 // Public API
 app.get('/api/products', listAll);
+
+// Protected API
+app.post('/api/products/add', checkAuth, checkRole, addProduct);
+app.put('/api/products/:id', checkAuth, checkRole, updateProduct);
+app.delete('/api/products/:id', checkAuth, checkRole, removeProduct);
+app.get('/api/revenue', checkAuth, checkRole, displayRevenue);
 
 // Order API
 app.post('/api/order', checkAuth, handleCommitOrder);
@@ -57,6 +67,7 @@ app.use('/api', (err, req, res, next) => {
 });
 
 // Start server
-app.listen(3000, () =>
-  console.log('Server running on http://localhost:3000')
-);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
