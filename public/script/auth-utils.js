@@ -1,5 +1,9 @@
-const openAuth = document.getElementById('openAuth');
-openAuth.addEventListener('click',() => loadAuthModal());
+document.addEventListener('DOMContentLoaded', () => {
+  const openAuth = document.getElementById('openAuth');
+  if (openAuth) {
+    openAuth.addEventListener('click', () => loadAuthModal());
+  }
+})
 
 // Create overlay
 const overlay = document.createElement('div');
@@ -149,3 +153,5 @@ export function loadAuthModal() {
     }
   });
 }
+
+
