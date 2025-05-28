@@ -40,6 +40,8 @@ export function renderCard(product) {
 export async function loadProducts() {
   try {
     const products = await (await fetch('/api/products')).json();
+    allProducts = products;
+
     // No products
     if (!products || products.length < 1) { container.innerHTML = "<p> No product to display. </p>"; }
     renderGrid(products);
@@ -52,7 +54,6 @@ function renderGrid(products) {
   container.innerHTML = '';
   products.forEach(p => container.appendChild(renderCard(p)));
 }
-
 
 // Display product info
 export function populateProductModal(product) {
@@ -78,6 +79,45 @@ export function populateProductModal(product) {
 
 
 /* ===========================
+   Search engine
+   =========================== */
+
+let allProducts;
+const searchInput = document.getElementById('product-search');
+const suggList = document.getElementById('search-suggestions');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if (!q) {
+    suggList.style.display = 'none';
+    renderGrid(allProducts);
+    return;
+  }
+  // Find up to 5 name matches
+  const matches = allProducts
+    .filter(p => p.name.toLowerCase().includes(q))
+    .slice(0, 10);
+
+  // Build suggestions dropdown
+  suggList.innerHTML = matches
+    .map(p => `<li class="list-group-item list-group-item-action" data-id="${p.id}">${p.name}</li>`)
+    .join('');
+  suggList.style.display = matches.length > 0 ? 'block' : 'none';
+
+  // When a suggestion is clicked
+  suggList.querySelectorAll('li').forEach(li => {
+    li.addEventListener('click', () => {
+      searchInput.value = li.textContent;
+      suggList.style.display = 'none';
+      // Render only the selected product
+      const prod = allProducts.find(x => x.id == li.dataset.id);
+      renderGrid(prod ? [prod] : []);
+    });
+  });
+});
+
+
+/* ===========================
    Helpers
    =========================== */
 
@@ -98,5 +138,3 @@ export function showMessage(msg, type = 'danger') {
 
 // DOM response
 document.addEventListener('DOMContentLoaded', refreshAll)
-
-

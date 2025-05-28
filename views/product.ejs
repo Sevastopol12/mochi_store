@@ -44,7 +44,7 @@
             </li>
             <li class="nav-item"><button class="btn cute-btn me-2">🎁 Khuyến mãi</button></li>
             <li class="nav-item"><button id="yt" class="btn cute-btn danger me-2">▶ YouTube</button></li>
-            <li class="nav-item"><a id = "info" class="nav-link active" href="/info"><i class="bi bi-cart-fill me-1"></i>My Info</a></li>
+            <li class="nav-item"><button class="btn cute-btn">🛒 Giỏ hàng</button></li>
 
             <% if (session && session.user) { %>
               <li class="nav-item user-welcome">
@@ -68,9 +68,24 @@
       <!-- Products Column -->
       <div class="col-12">
         <h1 class="section-title">Mochi Truyền Thống</h1>
-      <!-- Product list -->
-      <div id="product-list" class="row g-4"></div>
-    </div>
+          <!-- Search Bar -->
+          <div class="mb-4 position-relative">
+            <input
+              type="text"
+              id="product-search"
+              class="form-control"
+              placeholder="Search for a mochi…"
+              autocomplete="off"
+            />
+            <ul
+              id="search-suggestions"
+              class="list-group position-absolute w-100"
+              style="z-index: 1000; display: none;"
+            ></ul>
+          </div>
+          <!-- Product list -->
+          <div id="product-list" class="row g-4"></div>
+        </div>
 
       <!-- Floating Cart Button -->
       <button id="openCartBtn" class="btn btn-pink rounded-circle cart-float-btn">
@@ -181,6 +196,7 @@
       </div>
     </div>
   </div>
+</div>
 
   <!-- Commit alert form -->
   <div
@@ -243,4 +259,3 @@
 
 </body>
 </html>
-
