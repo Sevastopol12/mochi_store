@@ -1,11 +1,13 @@
-export default class Order {
-    constructor(id, date, products) {
+export default class Orer {
+    constructor(id, date, time, products) {
         this.id = id;
         this.date = date;
+        this.time = time;
         this.products = products;
         this.total = 0;
         this.payment = null;
         this.address = null;
+        this.customer = null;
         this.status = 0; // 0 for on-going, 1 for delivered
     }
 
@@ -17,7 +19,7 @@ export default class Order {
     // Sum up total price
     calculateTotal() {
         let total = 0;
-        Object.values(this.products).forEach(x => total += x.price * x.quantity);
+        Object.values(this.products).forEach(x => total += x.product.price * x.quantity);
         this.total = total;
         
         return this;
@@ -32,6 +34,11 @@ export default class Order {
     // Add deliver address
     assignAddress(address) {
         this.address = address;
+        return this;
+    }
+
+    assignUser(userEmail) {
+        this.customer = userEmail;
         return this;
     }
 

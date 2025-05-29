@@ -1,8 +1,9 @@
 import OrderManager from '../models/Manager/order_manager.js';
 const om = new OrderManager();
 
-export async function handleCommitOrder(req, res, body) {
+export async function handleCommitOrder(req, res, body, session) {
   try {
+    const user_email = session.user.email;
     const { orderMeta } = body;
     const { products, address, payment } = orderMeta;
     if (!products) {
@@ -21,6 +22,7 @@ export async function handleCommitOrder(req, res, body) {
     om.create(products);
     om.assignAddress(address);
     om.addPayment(payment);
+    om.assignEmail(user_email);
     const msg = await om.add();
 
     res.writeHead(200, { 'Content-type': 'application/json' });
@@ -32,3 +34,19 @@ export async function handleCommitOrder(req, res, body) {
   }
 }
 
+export async function listOrders(req, res, query, session) {
+    const { start, startTime, end, endTime } = query;
+
+    const userEmail = session.user ? session.user.email : 'test@example.com';
+
+    try {
+        const orders = await om.getOrdersByEmailAndDateRange(userEmail, start, startTime, end, endTime);
+        res.writeHead(200, { 'Content-type': 'application/json' });
+        return res.end(JSON.stringify(orders));
+
+    } 
+    catch (error) {
+        res.writeHead(500, { 'Content-type': 'application/json' });
+        return res.end(JSON.stringify({ message: err.message }));
+    }
+}

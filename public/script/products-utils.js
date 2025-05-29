@@ -55,8 +55,7 @@ function renderGrid(products) {
   products.forEach(p => container.appendChild(renderCard(p)));
 }
 
-// Display product info
-export function populateProductModal(product) {
+// Display product infoexport function populateProductModal(product) {
   // Get modal elements
   const titleEl = document.getElementById('productModalLabel');
   const imgEl   = document.getElementById('modalProductImage');

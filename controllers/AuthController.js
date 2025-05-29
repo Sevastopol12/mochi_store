@@ -19,10 +19,11 @@ export async function login(req, res, body, session) {
       res.writeHead(401, { 'Content-type': 'application/json' });
       return res.end(JSON.stringify({ message: 'Invalid credentials.' }));
     }
-    session.user = { id: user._id.toString(), name: user.name, role: user.role };
+    session.user = { id: user._id.toString(), name: user.name, role: user.role, email: user.email };
     res.writeHead(200, { 'Content-type': 'application/json' });
     return res.end(JSON.stringify({ message: 'Login successful.' }));
-  } catch (err) {
+  } 
+  catch (err) {
     res.writeHead(500, { 'Content-type': 'application/json' });
     return res.end(JSON.stringify({ message: err.message }));
   }
@@ -40,7 +41,8 @@ export async function register(req, res, body) {
     await am.add(name, password, email, phone_number);
     res.writeHead(201, { 'Content-type': 'application/json' });
     return res.end(JSON.stringify({ message: 'Registration successful.' }));
-  } catch (err) {
+  } 
+  catch (err) {
     res.writeHead(500, { 'Content-type': 'application/json' });
     return res.end(JSON.stringify({ message: err.message }));
   }
@@ -54,6 +56,8 @@ export async function logout(req, res, session) {
   res.writeHead(200, { 'Content-type': 'text/html' });
   return res.end(html);
 }
+
+
 export async function checkAuth(req, res, session) {
   if (session && session.user) return true;
 
@@ -72,6 +76,7 @@ export async function checkAuth(req, res, session) {
 
   return false;
 }
+
 
 export async function checkRole(req, res, session) {
   if (session.user.role === 'admin') return true;
