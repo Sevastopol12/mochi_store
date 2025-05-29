@@ -14,12 +14,13 @@ export default class AccountModel extends BaseModel {
 
   // Add an account
   async add(name, password, email, phone_number, role) {
+    role = 'user';
     const newId = String(this.listAll().length + 1)
     const db = await this.dbPromise;
     const accounts = db.collection(this.collection);
     let new_account;
-    if (role === 'user') {new_account = new User(newId, name, password, email, phone_number, role);}
-    else {new_account = new Admin(newId, name, password, email, phone_number, role);}
+    if (role === 'user') {new_account = new User(newId, name, password, email, phone_number, 'user');}
+    else {new_account = new Admin(newId, name, password, email, phone_number, 'admin');}
     await accounts.insertOne(new_account);
   }
 
