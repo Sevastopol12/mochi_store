@@ -119,20 +119,27 @@ const server = http.createServer(async (req, res) => {
     // API routes
     if (parsedUrl.startsWith('/api/')) {
       try {
+
+        // Order commit 
         if (parsedUrl === '/api/order' && method === 'POST') {
           if (!(await checkAuth(req, res, session))) return;
           const body = await parseJsonBody(req);
           return handleCommitOrder(req, res, body);
         }
+
+        // Login
         if (parsedUrl === '/api/login' && method === 'POST') {
           const body = await parseJsonBody(req);
           return login(req, res, body, session);
         }
+
+        // Register
         if (parsedUrl === '/api/register' && method === 'POST') {
           const body = await parseJsonBody(req);
           return register(req, res, body, session);
         }
 
+        // Logout
         if (parsedUrl === '/api/logout' && method === 'GET') {
           return await logout(req, res, session);        
         }
@@ -141,6 +148,7 @@ const server = http.createServer(async (req, res) => {
           return listAll(req, res);
         }
         
+        // Add product
          if (parsedUrl === '/api/products/add' && method === 'POST') {
           if (!(await checkAuth(req, res, session))) return;
           if (!(await checkRole(req, res, session))) return;
@@ -148,6 +156,7 @@ const server = http.createServer(async (req, res) => {
           return addProduct(req, res, body);
         }
 
+        // Update product attributes
         if (parsedUrl.match(/^\/api\/products\/\d+$/) && method === 'PUT') {
           if (!(await checkAuth(req, res, session))) return;
           if (!(await checkRole(req, res, session))) return;
@@ -156,6 +165,7 @@ const server = http.createServer(async (req, res) => {
           return updateProduct(req, res, body, { id });
         }
 
+        // Remove product
         if (parsedUrl.match(/^\/api\/products\/\d+$/) && method === 'DELETE') {
           if (!(await checkAuth(req, res, session))) return;
           if (!(await checkRole(req, res, session))) return;
@@ -163,6 +173,7 @@ const server = http.createServer(async (req, res) => {
           return removeProduct(req, res, { id });
         }
 
+        // Loads revenue
         if (parsedUrl === '/api/revenue' && method === 'GET') {
           if (!(await checkAuth(req, res, session))) return;
           if (!(await checkRole(req, res, session))) return;

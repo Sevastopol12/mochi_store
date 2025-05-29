@@ -38,7 +38,7 @@ export async function updateProduct(req, res, body, params) {
     }
     
     await pm.updateProduct(product, parseInt(productMeta.quantity, 10), parseFloat(productMeta.price), productMeta.description);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-type': 'application/json' });
     return res.end(JSON.stringify({ message: 'Quantity updated successfully.' }));
     
   } 

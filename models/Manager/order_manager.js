@@ -87,13 +87,4 @@ export default class OrderManager extends BaseManager{
         return today;
     }
 
-    getTime() {
-    let now = new Date();
-    var hh = String(now.getHours()).padStart(2, '0');
-    var min = String(now.getMinutes()).padStart(2, '0');
-    var ss = String(now.getSeconds()).padStart(2, '0');
-
-    let currentTime = hh + ':' + min + ':' + ss;
-    return currentTime;
-    }
 }
