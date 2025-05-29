@@ -1,9 +1,9 @@
-import BaseManager from './base_manager.js';
-import User from '../Account/user.js';
-import Admin from '../Account/admin.js';
+import BaseModel from './baseModel.js';
+import User from '../types/Account/user.js';
+import Admin from '../types/Account/admin.js';
 import { ObjectId } from 'mongodb';
 
-export default class AccountManager extends BaseManager {
+export default class AccountModel extends BaseModel {
   /**
    * A class that works with the Account database, have all access and permission to manipulate the Account database
   */

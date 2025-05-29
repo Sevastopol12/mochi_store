@@ -1,8 +1,8 @@
 
-import BaseManager from './base_manager.js';
-import Product from '../Product/product.js';
+import BaseModel from './baseModel.js';
+import Product from '../types/Product/product.js';
 
-export default class ProductManager extends BaseManager {
+export default class ProductModel extends BaseModel {
   constructor() {
     super();
     this.collection = 'products';

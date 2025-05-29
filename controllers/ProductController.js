@@ -1,11 +1,11 @@
 import ejs from 'ejs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import ProductManager from '../models/Manager/product_manager.js';
+import ProductModel from '../models/productModel.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const pm = new ProductManager();
+const pm = new ProductModel();
 
 export async function renderProductPage(req, res, options) {
   const view = path.join(__dirname, '../views/product.ejs');
