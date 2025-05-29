@@ -29,15 +29,18 @@ export async function login(req, res, body, session) {
   }
 }
 
-export async function register(req, res, body) {
+export async function register(req, res, body, session) {
   try {
-    let { name, email, password, phone_number, role } = body;
+    let accountMeta = body;
+    let { name, email, password, phone_number, role } = accountMeta;
     role = role || 'user';
     const exists = await am.isExisted(email);
+
     if (exists) {
       res.writeHead(409, { 'Content-type': 'application/json' });
       return res.end(JSON.stringify({ message: 'Email already registered.' }));
     }
+    
     await am.add(name, password, email, phone_number);
     res.writeHead(201, { 'Content-type': 'application/json' });
     return res.end(JSON.stringify({ message: 'Registration successful.' }));

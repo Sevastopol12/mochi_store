@@ -125,12 +125,13 @@ export function loadAuthModal() {
       const email = formRegister['reg-email'].value;
       const pass = formRegister['reg-password'].value;
       const phone_number = formRegister['reg-phone'].value;
+      let accountMeta = { name: name, email: email, password: pass , phone_number: phone_number }
 
       // Register
       const regRes = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name, email, password: pass , phone_number}),
+        body: JSON.stringify(accountMeta),
       });
       const regData = await regRes.json();
       if (!regRes.ok) throw new Error(regData.message);

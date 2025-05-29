@@ -1,5 +1,6 @@
 class BaseAccount{
-    constructor(username, password, phone_number) {
+    constructor(id, username, password, email, phone_number) {
+        this.id = id;
         this.username = username, 
         this.password = password,
         this.email = email,
