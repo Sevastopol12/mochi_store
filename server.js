@@ -134,9 +134,13 @@ const server = http.createServer(async (req, res) => {
         }
 
         if (parsedUrl === '/api/logout' && method === 'GET') {
-          return await logout(req, res, session);
-        
+          return await logout(req, res, session);        
         }
+
+        if (parsedUrl === '/api/products' && method === 'GET') {
+          return listAll(req, res);
+        }
+        
          if (parsedUrl === '/api/products/add' && method === 'POST') {
           if (!(await checkAuth(req, res, session))) return;
           if (!(await checkRole(req, res, session))) return;
