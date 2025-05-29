@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import ejs, { render } from 'ejs';
 
 import { renderProductPage, listAll } from './controllers/ProductController.js';
-import { handleCommitOrder } from './controllers/OrderController.js';
+import { handleCommitOrder, listOrders } from './controllers/OrderController.js';
 import { addProduct, displayRevenue, updateProduct, removeProduct } from './controllers/AdminController.js';
 import { checkAuth, checkRole, login, register, logout } from './controllers/AuthController.js';
 
@@ -107,7 +107,8 @@ const server = http.createServer(async (req, res) => {
           return renderProductPage(req, res, renderOptions);
 
         case '/info':
-          return renderView(res, 'info', renderOptions)
+          if (!(await checkAuth(req, res, session))) return;
+          return renderView(res, 'info', renderOptions);
         
         case '/admin':
           if (!(await checkAuth(req, res, session))) return;
@@ -124,7 +125,23 @@ const server = http.createServer(async (req, res) => {
         if (parsedUrl === '/api/order' && method === 'POST') {
           if (!(await checkAuth(req, res, session))) return;
           const body = await parseJsonBody(req);
-          return handleCommitOrder(req, res, body);
+          return handleCommitOrder(req, res, body, session);
+        }
+
+        if (parsedUrl === '/api/my-orders' && method === 'GET') {
+          if (!(await checkAuth(req, res, session))) return;
+
+          const fullUrl = new URL(req.url, `http://${req.headers.host}`);
+          const params  = fullUrl.searchParams;
+
+          const query = {
+            start:     params.get('start'),
+            startTime: params.get('startTime'),
+            end:       params.get('end'),
+            endTime:   params.get('endTime'),
+          };
+
+          return listOrders(req, res, query, session);
         }
 
         // Login

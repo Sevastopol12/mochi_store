@@ -46,6 +46,72 @@ export default class OrderManager extends BaseManager{
         else {return null;}
     }
 
+    async getOrdersByEmailAndDateRange(email, startDateString, startTimeString, endDateString, endTimeString) {
+        let db = await this.dbPromise;
+        let orders = db.collection(this.collection);
+
+        let user_orders = await orders.find({ customer: email }).toArray();
+        if (!user_orders || user_orders.length === 0) {
+            return [];
+        }
+
+        let filteredOrders = user_orders;
+
+        // Only proceed with date/time filtering if at least one date or time string is provided
+        if (startDateString || startTimeString || endDateString || endTimeString) {
+            let startDateTime = null;
+            let endDateTime = null;
+
+            // Construct startDateTime
+            if (startDateString) {
+                const fullStartString = `${startDateString}T${startTimeString || '00:00:00'}`;
+                startDateTime = new Date(fullStartString);
+
+                // Validate the date. If invalid, treat as null.
+                if (isNaN(startDateTime.getTime())) {
+                    console.warn(`Invalid start date/time: ${fullStartString}. Ignoring start date filter.`);
+                    startDateTime = null;
+                }
+            }
+
+            // Construct endDateTime
+            if (endDateString) {
+                // If endTimeString is not provided, default to "23:59:59" for the end of the day
+                const fullEndString = `${endDateString}T${endTimeString || '23:59:59'}`;
+                endDateTime = new Date(fullEndString);
+
+                // Validate the date. If invalid, treat as null.
+                if (isNaN(endDateTime.getTime())) {
+                    console.warn(`Invalid end date/time: ${fullEndString}. Ignoring end date filter.`);
+                    endDateTime = null;
+                }
+            }
+
+            // Apply filtering based on the constructed full date/time objects
+            filteredOrders = filteredOrders.filter(order => {
+                const orderFullDateTimeString = `${order.date}T${order.time}`;
+                const orderDateTime = new Date(orderFullDateTimeString);
+
+                // Handle cases where order.date or order.time might be missing or invalid
+                if (isNaN(orderDateTime.getTime())) {
+                    console.warn(`Order ${order.id} has invalid date/time: ${orderFullDateTimeString}. Skipping filter for this order.`);
+                    return false; 
+                }
+
+                let passesFilter = true;
+
+                if (startDateTime && orderDateTime < startDateTime) {
+                    passesFilter = false;
+                }
+                if (endDateTime && orderDateTime > endDateTime) {
+                    passesFilter = false;
+                }
+                return passesFilter;
+            });
+        }
+        return filteredOrders;
+    }
+
     // Cancel order
     cancel() {
         this.order = null;
@@ -87,4 +153,13 @@ export default class OrderManager extends BaseManager{
         return today;
     }
 
+    getTime() {
+    let now = new Date();
+    var hh = String(now.getHours()).padStart(2, '0');
+    var min = String(now.getMinutes()).padStart(2, '0');
+    var ss = String(now.getSeconds()).padStart(2, '0');
+
+    let currentTime = hh + ':' + min + ':' + ss;
+    return currentTime;
+    }
 }
