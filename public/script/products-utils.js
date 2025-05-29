@@ -49,13 +49,8 @@ export async function loadProducts() {
   catch(err) { console.error('Error loading products or template:', err); container.innerHTML = err;}
 }
 
-// Utility to render an arbitrary array of products
-function renderGrid(products) {
-  container.innerHTML = '';
-  products.forEach(p => container.appendChild(renderCard(p)));
-}
-
-// Display product infoexport function populateProductModal(product) {
+// Display product info
+export function populateProductModal(product) {
   // Get modal elements
   const titleEl = document.getElementById('productModalLabel');
   const imgEl   = document.getElementById('modalProductImage');
@@ -84,6 +79,12 @@ function renderGrid(products) {
 let allProducts;
 const searchInput = document.getElementById('product-search');
 const suggList = document.getElementById('search-suggestions');
+
+// Utility to render an arbitrary array of products
+function renderGrid(products) {
+  container.innerHTML = '';
+  products.forEach(p => container.appendChild(renderCard(p)));
+}
 
 searchInput.addEventListener('input', () => {
   const q = searchInput.value.trim().toLowerCase();
@@ -137,3 +138,4 @@ export function showMessage(msg, type = 'danger') {
 
 // DOM response
 document.addEventListener('DOMContentLoaded', refreshAll)
+
