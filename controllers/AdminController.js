@@ -1,7 +1,7 @@
-import ProductManager from '../models/Manager/product_manager.js';
-import ReveCounter from '../models/Manager/revenue_counter.js';
+import ProductModel from '../models/productModel.js';
+import ReveCounter from '../models/revenue_counter.js';
 
-const pm = new ProductManager();
+const pm = new ProductModel();
 const rc = new ReveCounter();
 
 export async function addProduct(req, res, body) {

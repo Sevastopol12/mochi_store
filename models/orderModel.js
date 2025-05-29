@@ -1,7 +1,7 @@
-import Order from "../Order/order.js";
-import BaseManager from "./base_manager.js";
+import Order from "../types/Order/order.js";
+import BaseModel from "./baseModel.js";
 
-export default class OrderManager extends BaseManager{
+export default class OrderModel extends BaseModel{
     constructor(){
         super();
         this.collection = 'orders'

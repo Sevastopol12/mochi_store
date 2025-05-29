@@ -1,11 +1,11 @@
 import ejs from 'ejs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import AccountManager from '../models/Manager/account_manager.js';
+import AccountModel from '../models/accountModel.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const am = new AccountManager();
+const am = new AccountModel();
 
 export async function login(req, res, body, session) {
   try {
