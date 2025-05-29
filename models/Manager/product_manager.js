@@ -1,6 +1,6 @@
 
-import BaseManager from './Manager/base_manager.js';
-import Product from './Product/product.js';
+import BaseManager from './base_manager.js';
+import Product from '../Product/product.js';
 
 export default class ProductManager extends BaseManager {
   constructor() {

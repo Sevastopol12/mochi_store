@@ -40,12 +40,18 @@
             <li class="nav-item"><a class="nav-link" href="/">Trang chủ</a></li>
             <li class="nav-item"><a class="nav-link active" href="/product">Sản phẩm</a></li>
             <li class="nav-item">
-              <a class="nav-link" href="#"><i class="bi bi-cart-fill me-1"></i>Cục mochi dễ hưn >.<</a>
+              <% if (session?.user?.role === 'admin') { %>
+                <a class="nav-link" href="/admin">
+                  <i class="bi bi-cart-fill me-1"></i>My Info
+                </a>
+              <% } else { %>
+                <a class="nav-link" href="/info">
+                  <i class="bi bi-cart-fill me-1"></i>My Info
+                </a>
+              <% } %>
             </li>
             <li class="nav-item"><button class="btn cute-btn me-2">🎁 Khuyến mãi</button></li>
             <li class="nav-item"><button id="yt" class="btn cute-btn danger me-2">▶ YouTube</button></li>
-            <li class="nav-item"><button class="btn cute-btn">🛒 Giỏ hàng</button></li>
-
             <% if (session && session.user) { %>
               <li class="nav-item user-welcome">
                 <span>Hi, <%= session.user.name %>! 😊</span>

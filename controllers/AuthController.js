@@ -1,50 +1,85 @@
-import AccountManager from '../models/Manager/account_manager.js'
+import ejs from 'ejs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import AccountManager from '../models/Manager/account_manager.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const am = new AccountManager();
 
-//Login
-export async function login(req, res) {
-  const { email, password } = req.body;
-  if (!email || !password) { return res.status(400).json({ message: 'Email and password are required.' }); }
-
-  const user = await am.authenticate(email, password);
-  if (!user) { return res.status(401).json({ message: 'Invalid credentials.' }); }
-
-  // Set session
-  req.session.user = { id: user._id.toString(), name: user.name, role: user.role };
-  return res.json({ message: 'Login successful.' });
-}
-
-//Register
-export async function register(req, res) {
-  const { name, email, password, phone_number, role } = req.body;
-  role = role || 'user';
-
-  const exists = await am.isExisted(email);
-  if (exists) {
-    return res.status(409).json({ message: 'Email already registered.' });
+export async function login(req, res, body, session) {
+  try {
+    const { email, password } = body;
+    if (!email || !password) {
+      res.writeHead(400, { 'Content-type': 'application/json' });
+      return res.end(JSON.stringify({ message: 'Email and password are required.' }));
+    }
+    const user = await am.authenticate(email, password);
+    if (!user) {
+      res.writeHead(401, { 'Content-type': 'application/json' });
+      return res.end(JSON.stringify({ message: 'Invalid credentials.' }));
+    }
+    session.user = { id: user._id.toString(), name: user.name, role: user.role };
+    res.writeHead(200, { 'Content-type': 'application/json' });
+    return res.end(JSON.stringify({ message: 'Login successful.' }));
+  } catch (err) {
+    res.writeHead(500, { 'Content-type': 'application/json' });
+    return res.end(JSON.stringify({ message: err.message }));
   }
-  await am.add(name, password, email, phone_number);
-  return res.status(201).json({ message: 'Registration successful.' });
 }
 
-export function logout(req, res) {
-  req.session.destroy(err => {
-    if (err) return res.status(500).json({ message: 'Logout failed.' });
-    res.clearCookie('connect.sid');
-  });
+export async function register(req, res, body) {
+  try {
+    let { name, email, password, phone_number, role } = body;
+    role = role || 'user';
+    const exists = await am.isExisted(email);
+    if (exists) {
+      res.writeHead(409, { 'Content-type': 'application/json' });
+      return res.end(JSON.stringify({ message: 'Email already registered.' }));
+    }
+    await am.add(name, password, email, phone_number);
+    res.writeHead(201, { 'Content-type': 'application/json' });
+    return res.end(JSON.stringify({ message: 'Registration successful.' }));
+  } catch (err) {
+    res.writeHead(500, { 'Content-type': 'application/json' });
+    return res.end(JSON.stringify({ message: err.message }));
+  }
 }
 
+export async function logout(req, res, session) {
+  // Clear session data
+  Object.keys(session).forEach(key => delete session[key]);
+  const view = path.join(__dirname, '../views/homepage.ejs');
+  const html = await ejs.renderFile(view, { title: 'Admins Only.', session } );
+  res.writeHead(200, { 'Content-type': 'text/html' });
+  return res.end(html);
+}
+export async function checkAuth(req, res, session) {
+  if (session && session.user) return true;
 
-export function checkAuth(req, res, next) {
-  if (req.session && req.session.user) { return next(); }
-  // Return JSON if its an API call
-  if (req.path.startsWith('/api')) { return res.status(401).json({message: "Unauthorized."}); }
-  res.render('access-denied', {title: 'Admins Only.'})
+  const isApi = req.url.startsWith('/api');
+
+  if (isApi) {
+    res.writeHead(401, { 'Content-type': 'application/json' });
+    res.end(JSON.stringify({ message: 'Unauthorized.' }));
+  } 
+  else {
+    const view = path.join(__dirname, '../views/access-denied.ejs');
+    const html = await ejs.renderFile(view, { title: 'Admins Only.' });
+    res.writeHead(403, { 'Content-type': 'text/html' });
+    res.end(html);
+  }
+
+  return false;
 }
 
+export async function checkRole(req, res, session) {
+  if (session.user.role === 'admin') return true;
 
-export function checkRole(req, res, next) {
-  if (req.session.user.role === 'admin') { next(); }
-  else {res.status(403).render('access-denied', { title: 'Admins Only' })};
-};
+  const view = path.join(__dirname, '../views/access-denied.ejs');
+  const html = await ejs.renderFile(view, { title: 'Admins Only.' });
+  res.writeHead(403, { 'Content-type': 'text/html' });
+  res.end(html);
+
+  return false;
+}

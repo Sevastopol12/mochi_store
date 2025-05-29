@@ -10,7 +10,7 @@ export default class OrderManager extends BaseManager{
 
     // Create a temporary order object. This object lives on the client side
     create(products) {
-        this.order = new Order(this.generateID(), this.getDate(), products);
+        this.order = new Order(this.generateID(), this.getDate(), this.getTime(), products);
         this.order.calculateTotal();
     }
 
@@ -25,7 +25,7 @@ export default class OrderManager extends BaseManager{
             await orders.insertOne(this.order);
 
             this.order = null; // Reset order variable
-            return "Order committed!"
+            return "Order committed!";
         }
         catch (err) {
             throw new Error('Cannot insert order into DB');
@@ -63,6 +63,11 @@ export default class OrderManager extends BaseManager{
         this.order.assignAddress(address);
         return;
     }
+
+    assignEmail(email){
+        this.order.assignUser(email);
+        return;
+    }
     
     // Generate random id
     generateID() {
@@ -74,10 +79,12 @@ export default class OrderManager extends BaseManager{
     getDate() {
         let today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
         var yyyy = today.getFullYear();
 
-        today = mm + '/' + dd + '/' + yyyy;
+        // Changed to YYYY-MM-DD
+        today = yyyy + '-' + mm + '-' + dd;
         return today;
     }
+
 }

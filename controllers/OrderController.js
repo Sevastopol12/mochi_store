@@ -1,26 +1,34 @@
-import OrderManager from "../models/Manager/order_manager.js";
+import OrderManager from '../models/Manager/order_manager.js';
+const om = new OrderManager();
 
-const om = new OrderManager()
-
-export async function handleCommitOrder(req, res, next) {
-    try {
-        let { orderMeta } = req.body;
-        let { products, address, payment } = orderMeta;
-
-        if (!products) {return res.status(500).json({message: "The cart is empty."});}
-        if (!address) {return res.status(500).json({message: "Please fill in address."});}
-        if (!payment) {return res.status(500).json({message: "Please select a payment method."});}
-
-        // Create order
-        om.create(products);
-        om.assignAddress(address);
-        om.addPayment(payment);
-
-        // Commit to DB
-        const message = await om.add();
-        return res.status(200).json({ message });
-    } 
-    catch (err) {
-        return res.status(500).json({ message: err.message });
+export async function handleCommitOrder(req, res, body) {
+  try {
+    const { orderMeta } = body;
+    const { products, address, payment } = orderMeta;
+    if (!products) {
+      res.writeHead(400, { 'Content-type': 'application/json' });
+      return res.end(JSON.stringify({ message: 'The cart is empty.' }));
     }
+    if (!address) {
+      res.writeHead(400, { 'Content-type': 'application/json' });
+      return res.end(JSON.stringify({ message: 'Please fill in address.' }));
+    }
+    if (!payment) {
+      res.writeHead(400, { 'Content-type': 'application/json' });
+      return res.end(JSON.stringify({ message: 'Please select a payment method.' }));
+    }
+
+    om.create(products);
+    om.assignAddress(address);
+    om.addPayment(payment);
+    const msg = await om.add();
+
+    res.writeHead(200, { 'Content-type': 'application/json' });
+    return res.end(JSON.stringify({ message: msg }));
+  } 
+  catch (err) {
+    res.writeHead(500, { 'Content-type': 'application/json' });
+    return res.end(JSON.stringify({ message: err.message }));
+  }
 }
+

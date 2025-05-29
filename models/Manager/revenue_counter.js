@@ -1,4 +1,4 @@
-import AppConfig from '../config/dbConfig.js'
+import AppConfig from '../Config.js'
 
 /**
  * This class handles revenue-related info. Works directly with order collection. 

@@ -17,7 +17,7 @@ export default class Order {
     // Sum up total price
     calculateTotal() {
         let total = 0;
-        this.products.forEach(x => total += x.product.price * x.quantity);
+        Object.values(this.products).forEach(x => total += x.price * x.quantity);
         this.total = total;
         
         return this;

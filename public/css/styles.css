@@ -2,6 +2,10 @@
   --deep-pink: #e84393;
 }
 
+header + main {
+  margin-top: 68px;
+}
+
 /* ==========================
    Global Reset & Typography
    ========================== */
@@ -15,7 +19,6 @@ body {
   background: #fff0f6;
   font-family: 'Comic Neue', cursive, sans-serif;
   line-height: 1.5;
-  padding-top: 68px
 }
 
 /* For background */

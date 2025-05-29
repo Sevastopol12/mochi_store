@@ -1,23 +1,26 @@
-import ProductManager from "../models/Manager/product_manager.js";
+import ejs from 'ejs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import ProductManager from '../models/Manager/product_manager.js';
 
-/**
- * A controller that defines routing's actions for loading product page
- */
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const pm = new ProductManager();
 
-// Render product page
-export async function renderProductPage(req, res, next) {
-  res.render('product', {title: 'Product page'});
+export async function renderProductPage(req, res, options) {
+  const view = path.join(__dirname, '../views/product.ejs');
+  const html = await ejs.renderFile(view, options);
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  return res.end(html);
 }
 
-// Loads all products from the database
-export async function listAll(req, res, next) {
+export async function listAll(req, res) {
   try {
-    let products = await pm.listAll();
-    res.json(products);
-  }
-  catch(err) {
-    next(err);
+    const products = await pm.listAll();
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify(products));
+  } catch (err) {
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ message: err.message }));
   }
 }
