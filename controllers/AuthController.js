@@ -40,7 +40,7 @@ export async function register(req, res, body, session) {
       res.writeHead(409, { 'Content-type': 'application/json' });
       return res.end(JSON.stringify({ message: 'Email already registered.' }));
     }
-    
+
     await am.add(name, password, email, phone_number);
     res.writeHead(201, { 'Content-type': 'application/json' });
     return res.end(JSON.stringify({ message: 'Registration successful.' }));
@@ -54,10 +54,8 @@ export async function register(req, res, body, session) {
 export async function logout(req, res, session) {
   // Clear session data
   Object.keys(session).forEach(key => delete session[key]);
-  const view = path.join(__dirname, '../views/homepage.ejs');
-  const html = await ejs.renderFile(view, { title: 'Admins Only.', session } );
-  res.writeHead(200, { 'Content-type': 'text/html' });
-  return res.end(html);
+  res.writeHead(302, {'Location': '/homepage',});
+  return res.end();
 }
 
 
