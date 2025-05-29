@@ -108,6 +108,11 @@ const server = http.createServer(async (req, res) => {
 
         case '/info':
           return renderView(res, 'info', renderOptions)
+        
+        case '/admin':
+          if (!(await checkAuth(req, res, session))) return;
+          if (!(await checkRole(req, res, session))) return;
+          return renderView(res, 'admin', renderOptions);     
       }
     }
 
@@ -130,17 +135,47 @@ const server = http.createServer(async (req, res) => {
 
         if (parsedUrl === '/api/logout' && method === 'GET') {
           return await logout(req, res, session);
+        
+        }
+         if (parsedUrl === '/api/products/add' && method === 'POST') {
+          if (!(await checkAuth(req, res, session))) return;
+          if (!(await checkRole(req, res, session))) return;
+          const body = await parseJsonBody(req);
+          return addProduct(req, res, body);
+        }
+
+        if (parsedUrl.match(/^\/api\/products\/\d+$/) && method === 'PUT') {
+          if (!(await checkAuth(req, res, session))) return;
+          if (!(await checkRole(req, res, session))) return;
+          const id = parsedUrl.split('/').pop();
+          const body = await parseJsonBody(req);
+          return updateProduct(req, res, body, { id });
+        }
+
+        if (parsedUrl.match(/^\/api\/products\/\d+$/) && method === 'DELETE') {
+          if (!(await checkAuth(req, res, session))) return;
+          if (!(await checkRole(req, res, session))) return;
+          const id = parsedUrl.split('/').pop();
+          return removeProduct(req, res, { id });
+        }
+
+        if (parsedUrl === '/api/revenue' && method === 'GET') {
+          if (!(await checkAuth(req, res, session))) return;
+          if (!(await checkRole(req, res, session))) return;
+          return displayRevenue(req, res);
         }
         // Unknown API endpoint
         res.writeHead(404, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ message: 'Not found' }));
       } 
+
       catch (apiErr) {
         console.error(apiErr);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ message: 'Internal server error.' }));
       }
     }
+
 
     // Fallback 404
     res.writeHead(404, { 'Content-Type': 'text/plain' });
