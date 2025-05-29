@@ -98,7 +98,11 @@ const server = http.createServer(async (req, res) => {
         case '/':
         case '/homepage':
           return renderView(res, 'homepage', renderOptions);
+        case '/login':
+          return renderView(res, 'login', renderOptions);
 
+        case '/register':
+          return renderView(res, 'register', renderOptions);
         case '/product':
           return renderProductPage(req, res, renderOptions);
 
@@ -114,6 +118,18 @@ const server = http.createServer(async (req, res) => {
           if (!(await checkAuth(req, res, session))) return;
           const body = await parseJsonBody(req);
           return handleCommitOrder(req, res, body);
+        }
+        if (parsedUrl === '/api/login' && method === 'POST') {
+          const body = await parseJsonBody(req);
+          return login(req, res, body, session);
+        }
+        if (parsedUrl === '/api/register' && method === 'POST') {
+          const body = await parseJsonBody(req);
+          return register(req, res, body, session);
+        }
+
+        if (parsedUrl === '/api/logout' && method === 'GET') {
+          return await logout(req, res, session);
         }
         // Unknown API endpoint
         res.writeHead(404, { 'Content-Type': 'application/json' });
